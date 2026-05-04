@@ -15,16 +15,15 @@ services:
       retries: 5
       start_period: 15s
 
- backend:
+  backend:
     build:
       context: .
       dockerfile: deploy/docker/Dockerfile.backend
-    image: my_custom_backend_v1  # <--- ADD THIS LINE
+    image: my_custom_backend_v1
     restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
-    # (keep the rest exactly as it is)
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-oe}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-openestimate}
       DATABASE_SYNC_URL: postgresql://${POSTGRES_USER:-oe}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-openestimate}
@@ -50,16 +49,15 @@ services:
       retries: 5
       start_period: 20s
 
- frontend:
+  frontend:
     build:
       context: .
       dockerfile: deploy/docker/Dockerfile.frontend
-    image: my_custom_frontend_v1  # <--- ADD THIS LINE
+    image: my_custom_frontend_v1
     restart: unless-stopped
     depends_on:
       backend:
         condition: service_healthy
-    # (keep the rest exactly as it is)
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:80/"]
       interval: 15s
